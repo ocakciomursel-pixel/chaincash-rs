@@ -86,12 +86,14 @@ impl ChainCashApp {
             });
 
         let node = node_from_config(&self.config.node)?;
+        let wallet_password = self.config.node.wallet_password().map(str::to_owned);
 
-        let state = Arc::new(ServerState::new(
+        let state = Arc::new(ServerState::with_wallet_password(
             node,
             self.config.node.api_key(),
             store,
             predicates,
+            wallet_password,
         )?);
         start_scanner(state.clone()).await.unwrap();
         Ok(Server::serve(listener, state).await?)
