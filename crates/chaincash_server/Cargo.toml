@@ -19,3 +19,5 @@ ergo-lib = { workspace = true }
 serde = { workspace = true }
 serde_json = { workspace = true }
 ergo_client = { workspace = true }
+utoipa = { workspace = true, features = ["axum_extras"] }
+utoipa-swagger-ui = { version = "6.0.0", features = ["axum"] }

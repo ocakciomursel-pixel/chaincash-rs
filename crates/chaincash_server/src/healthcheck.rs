@@ -9,6 +9,15 @@ fn internal_error(e: impl std::fmt::Display) -> (StatusCode, String) {
     (StatusCode::INTERNAL_SERVER_ERROR, e.to_string())
 }
 
+#[utoipa::path(
+    get,
+    path = "/healthcheck",
+    tag = "healthcheck",
+    responses(
+        (status = 200, description = "Node running and indexed height returned", body = crate::openapi::HealthcheckResponse),
+        (status = 500, description = "Failed to query node", body = String)
+    )
+)]
 pub async fn healthcheck(
     State(state): State<Arc<ServerState>>,
 ) -> Result<Json<Value>, (StatusCode, String)> {
