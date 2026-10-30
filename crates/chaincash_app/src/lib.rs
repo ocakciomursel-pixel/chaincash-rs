@@ -3,7 +3,7 @@ use std::sync::Arc;
 use chaincash_offchain::node::node_from_config;
 use chaincash_predicate::predicates::Predicate;
 use chaincash_server::Server;
-use chaincash_services::{scanner::start_scanner, ServerState};
+use chaincash_services::{refund_worker::start_refund_worker, scanner::start_scanner, ServerState};
 use chaincash_store::{ChainCashStore, Update};
 use config::{Environment, File};
 use thiserror::Error;
@@ -94,6 +94,7 @@ impl ChainCashApp {
             predicates,
         )?);
         start_scanner(state.clone()).await.unwrap();
+        start_refund_worker(state.clone());
         Ok(Server::serve(listener, state).await?)
     }
 }

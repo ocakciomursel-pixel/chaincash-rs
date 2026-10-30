@@ -8,6 +8,7 @@ use transaction::{TransactionService, TransactionServiceError};
 
 pub mod chain;
 pub mod compiler;
+pub mod refund_worker;
 pub mod scanner;
 pub mod transaction;
 
@@ -52,7 +53,11 @@ impl ServerState {
             .collect())
     }
 
-    pub fn tx_service(&self) -> TransactionService {
+    pub async fn current_height(&self) -> Result<u32, TransactionServiceError> {
+        Ok(self.node.endpoints().root()?.info().await?.full_height as u32)
+    }
+
+    pub fn tx_service(&self) -> TransactionService<'_> {
         TransactionService::new(&self.node, &self.chain, &self.store, &self.compiler)
     }
 }
